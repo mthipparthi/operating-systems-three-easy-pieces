@@ -46,6 +46,34 @@ def scrape_urls2():
         for k in sorted(rslt.keys()):
             print(k, rslt[k], file=f)
 
+def scrape_urls3():
+    # table of different chapters
+    columns = 6
+    url = "http://pages.cs.wisc.edu/~remzi/OSTEP"
+    resp = requests.get(url)
+    soup = bs4.BeautifulSoup(resp.text, "html.parser")
+    base_url = "http://pages.cs.wisc.edu/~remzi/OSTEP/{}"
+
+    rslt = [[] for _ in range(columns)]
+    col = 0
+    col_valid = 0 # save the number of whole chapters
+    for link in soup.find_all("td"):
+        if "bgcolor" in link.attrs:
+            a = link.find("a")
+            if a != None:
+                if "href" in a.attrs and ".pdf" in a.attrs["href"]:
+                    url = base_url.format(a.attrs["href"])
+                    rslt[col % 6].append(url)
+                    col_valid += 1
+            col += 1
+    print("Total number of the download urls is {}".format(col_valid+1))
+
+    _ = 101
+    with open("./urls.txt", "w+") as f:
+        for cols in rslt:
+            for tmp in cols:
+                print(_, tmp, file=f)
+                _ += 1
 
 def download_book():
     def download(i, url):
@@ -78,7 +106,7 @@ def merge_pdf():
     output_dir = Path("./output")
     files = [file.resolve() for file in sorted(output_dir.glob("*.pdf"))]
 
-    files = files[-2:] + files[0:-2]
+    #files = files[-2:] + files[0:-2]
 
     # print(files)
     merger = PdfFileMerger()
@@ -98,8 +126,8 @@ def read_file():
 
 
 if __name__ == "__main__":
-    # scrape_urls2()
-    # download_book()
+    #scrape_urls3()
+    #download_book()
     merge_pdf()
-    # read_file()
+    #read_file()
 
