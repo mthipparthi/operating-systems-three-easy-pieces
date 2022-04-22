@@ -6,7 +6,7 @@ certifi==2019.6.16
 chardet==3.0.4
 Click==7.0
 idna==2.8
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 requests==2.22.0
 soupsieve==1.9.2
 toml==0.10.0
